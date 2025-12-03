@@ -1,6 +1,6 @@
 [package]
 name = "hanzi-calligraphy"
-version = "0.1.0"
+version = "0.1.1"
 entrypoint = "lib.typ"
 authors = ["yuegeao"]
 license = "MIT"
@@ -8,7 +8,7 @@ description = "用于书法练习的田字格模板。A calligraphy practice tem
 repository = "https://github.com/yuegeao/hanzi-calligraphy"
 keywords = ["template", "calligraphy","Chinese","hanzi"]
 categories = ["fun"]
-compiler = "0.12.0"
+compiler = "0.14.0"
 exclude = ["imgs"]
 
 [template]
