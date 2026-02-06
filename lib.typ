@@ -83,6 +83,17 @@
   spacing-rate: 29%,
   x-rate: 16%,
   y-rate: 26%,
+  col-gutter: 0pt, // 列间距（用于AllV模式）
+  // Vertical punctuation positioning (for AllV mode)
+  punc-dx: 0.1em, // 标点水平偏移
+  punc-dy: -0.5em, // 标点垂直偏移
+  open-bracket-dx: 0pt, // 开括号水平偏移
+  open-bracket-dy: 0.2em, // 开括号垂直偏移
+  close-bracket-dx: 0pt, // 闭括号水平偏移
+  close-bracket-dy: -0.3em, // 闭括号垂直偏移
+  sutegana-dx: 0.15em, // 小假名水平偏移
+  sutegana-dy: -0.1em, // 小假名垂直偏移
+  sutegana-scale: 0.8, // 小假名缩放比例
   body, // 书写内容
 ) = {
   let paper-sizes = (
@@ -160,20 +171,102 @@
   )
   set par(..par-settings) // 行距设置
 
-  let content = text(
-    size: size * 87%, // 字体大小调整
-    font: font, // 字体
-    lang: "cn", // 语言设置
-    tracking: tracking, // 字符间距
-    fill: if miao { gray } else { black }, // 是否描红
-  )[
-    #body  // 渲染书写内容
-  ]
+  // Vertical punctuation helpers for AllV mode
+  // 标点符号（逗号、顿号、句号等）- 右上角
+  let vp(p) = box(
+    width: 1em,
+    height: 0.8em,
+    move(dx: punc-dx, dy: punc-dy)[#p]
+  )
+  
+  // 开括号（﹁ ︵ 等）- 底部居中
+  let vpo(p) = box(
+    width: 1em,
+    height: 0.8em,
+    move(dx: open-bracket-dx, dy: open-bracket-dy)[#p]
+  )
+  
+  // 闭括号（﹂ ︶ 等）- 顶部居中
+  let vpc(p) = box(
+    width: 1em,
+    height: 0.8em,
+    move(dx: close-bracket-dx, dy: close-bracket-dy)[#p]
+  )
+
+  // Small kana helper - positioned slightly right for vertical text
+  let vk(p) = box(
+    width: 1em,
+    height: 1em,
+    move(dx: sutegana-dx, dy: sutegana-dy)[#text(size: sutegana-scale * 1em)[#p]]
+  )
 
   if type == "AllV" {
     // 伪竖排效果：使用分栏布局，每栏宽度为一个字宽
-    columns(cols, gutter: 0pt, content)
+    // Apply show rules for automatic vertical punctuation
+    show "，": vp[，]
+    show "、": vp[、]
+    show "。": vp[。]
+    show "．": vp[．]
+    show "！": box(width: 1em, height: 1em, align(center + horizon)[！])
+    show "？": box(width: 1em, height: 1em, align(center + horizon)[？])
+    show "!": box(width: 1em, height: 1em, align(center + horizon)[！])
+    show "?": box(width: 1em, height: 1em, align(center + horizon)[？])
+    show "「": vpo[﹁]
+    show "」": vpc[﹂]
+    show "『": vpo[﹃]
+    show "』": vpc[﹄]
+    show "（": vpo[︵]
+    show "）": vpc[︶]
+    show "【": vpo[︻]
+    show "】": vpc[︼]
+    show "〈": vpo[︿]
+    show "〉": vpc[﹀]
+    show "《": vpo[︽]
+    show "》": vpc[︾]
+    
+    // Small hiragana (sutegana) - positioned upper-right
+    show "っ": vk[っ]
+    show "ゃ": vk[ゃ]
+    show "ゅ": vk[ゅ]
+    show "ょ": vk[ょ]
+    show "ぁ": vk[ぁ]
+    show "ぃ": vk[ぃ]
+    show "ぅ": vk[ぅ]
+    show "ぇ": vk[ぇ]
+    show "ぉ": vk[ぉ]
+    
+    // Small katakana - positioned upper-right
+    show "ッ": vk[ッ]
+    show "ャ": vk[ャ]
+    show "ュ": vk[ュ]
+    show "ョ": vk[ョ]
+    show "ァ": vk[ァ]
+    show "ィ": vk[ィ]
+    show "ゥ": vk[ゥ]
+    show "ェ": vk[ェ]
+    show "ォ": vk[ォ]
+    
+    let content = text(
+      size: size * 87%, // 字体大小调整
+      font: font, // 字体
+      lang: "cn", // 语言设置
+      tracking: tracking, // 字符间距
+      fill: if miao { gray } else { black }, // 是否描红
+    )[
+      #body  // 渲染书写内容
+    ]
+    
+    columns(cols, gutter: col-gutter, content)
   } else {
+    let content = text(
+      size: size * 87%, // 字体大小调整
+      font: font, // 字体
+      lang: "cn", // 语言设置
+      tracking: tracking, // 字符间距
+      fill: if miao { gray } else { black }, // 是否描红
+    )[
+      #body  // 渲染书写内容
+    ]
     content
   }
 }
