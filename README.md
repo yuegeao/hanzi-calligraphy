@@ -237,8 +237,3 @@ Use `#v()` to add vertical space within a column:
 ## License
 
 This project is licensed under the MIT License.
-
-## Credits
-
-- Original package: [hanzi-calligraphy](https://github.com/yuegeao/hanzi-calligraphy) by yuegeao
-- Extended features: Column gutter, vertical punctuation, Japanese kana support, and customizable positioning
